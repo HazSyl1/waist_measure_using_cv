@@ -6,7 +6,7 @@ import sys
 mp_drawing = mp.solutions.drawing_utils
 mp_pose=mp.solutions.pose
 pose=mp_pose.Pose(min_detection_confidence=0.8,min_tracking_confidence=0.9)
-path='./assets/ssc2.jpg'
+path='./assets/mum1.jpg'
 try:
     im=Image.open(path)
     dpi=im.info['dpi']
@@ -18,18 +18,18 @@ print('DPI=',dpi[0],"\n\n")
 
 cv.startWindowThread()
 
-cap=cv.VideoCapture(0)
+#cap=cv.VideoCapture(0)
 
-#cap=cv.imread(path)
+cap=cv.imread(path)
 
 pop=0
 po=0
-avg=[]
-while True:
-#if cap is not None:
-    ret, frame=cap.read()
-    # frame=cap
-    frame=cv.resize(frame,(350,600))
+
+#while True:
+if cap is not None:
+#    ret, frame=cap.read()
+    frame=cap
+    frame=cv.resize(frame,(500,750))
     
     frame_rgb=cv.cvtColor(frame,cv.COLOR_BGR2RGB)
     
@@ -71,11 +71,10 @@ while True:
         
         conv=350/dpi[0]
         fin=distance_pixels*conv
-        if po%10==0 and landmark_24 is not None and landmark_31 is not None and landmark_0 is not None and 0 < landmark_0.x< 1 and 0 < landmark_0.y< 1: 
-            inch=(fin*100)/2.54
+        if landmark_24 is not None and landmark_31 is not None and landmark_0 is not None and 0 < landmark_0.x< 1 and 0 < landmark_0.y< 1: 
+            inch=round((fin*100)/2.54)
             print('Dist Pixel',distance_pixels,'\n\n')
             print("final:",fin*100," cm",'\n ',inch,' inch' )
-            avg.append(inch)
             # cv.rectangle(frame, (50,50), (650,450), (255,255,255), 2)
             cv.putText(frame,str(inch)+' inch',(80,100),cv.FONT_HERSHEY_COMPLEX,1,(0,0,255),3)
 
@@ -83,22 +82,22 @@ while True:
     else:
         if pop%50==0:    
             print("SORRY , Detection failed. Try a different image.")
-            #sys.exit()
+            sys.exit()
         pop+=1
         
         
         
 
     cv.imshow('frame',frame)
-    # cap.release()
-    # if cv.waitKey(0) & 0xFF == ord('q'):
-    #     cv.destroyAllWindows()
+    #cap.release()
+    if cv.waitKey(0) & 0xFF == ord('q'):
+        cv.destroyAllWindows()
     
     
-    if cv.waitKey(1) & 0xFF == ord('q'):
-        break
-print('AVG:',sum(avg)/len(avg))
-cap.release()
+    # if cv.waitKey(1) & 0xFF == ord('q'):
+    #     break
+    
+#cap.release()
 cv.destroyAllWindows()
     
     
